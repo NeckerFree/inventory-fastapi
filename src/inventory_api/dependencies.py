@@ -1,0 +1,19 @@
+#file: src/inventory_api/dependencies.py
+from typing import Protocol, TypeVar
+
+from inventory_api.schemas.product import Product
+
+T = TypeVar("T")
+
+#Generic Protocol for repository operations
+class Repository(Protocol[T]):
+    def get_by_id(self, entity_id: int) -> T|None: ...
+    def get_all(self) -> list[T]: ...
+    def create(self, entity_data: dict) -> T: ...
+    def update(self, entity_id: int, entity_data: dict) -> T | None: ...
+    def delete(self, entity_id: int) -> bool: ...
+    
+# Specialize the generic protocol for Product
+class IProductRepository(Repository[Product], Protocol):
+    ...
+
