@@ -49,6 +49,7 @@ The API is available at `http://127.0.0.1:8000`. Open `http://127.0.0.1:8000/doc
 | `GET` | `/products/{product_id}` | Retrieve a product |
 | `POST` | `/products/` | Create a product |
 | `PUT` | `/products/{product_id}` | Update a product |
+| `PATCH` | `/products/{product_id}` | Partially update a product |
 | `DELETE` | `/products/{product_id}` | Delete a product |
 
 Product creation expects a JSON body such as:

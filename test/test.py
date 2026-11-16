@@ -44,6 +44,36 @@ def test_get_product_uses_fake_repository() -> None:
         app.dependency_overrides.pop(get_product_repository, None)
 
 
+def test_patch_product_changes_only_provided_fields() -> None:
+    app.dependency_overrides[get_product_repository] = lambda: FakeProductRepository()
+
+    try:
+        with TestClient(app) as client:
+            response = client.patch("/products/1", json={"name": "Updated Product"})
+
+        assert response.status_code == 200
+        assert response.json() == {
+            "id": 1,
+            "name": "Updated Product",
+            "price": "9.99",
+            "quantity": 1,
+        }
+    finally:
+        app.dependency_overrides.pop(get_product_repository, None)
+
+
+def test_patch_product_rejects_null_values() -> None:
+    app.dependency_overrides[get_product_repository] = lambda: FakeProductRepository()
+
+    try:
+        with TestClient(app) as client:
+            response = client.patch("/products/1", json={"name": None})
+
+        assert response.status_code == 422
+    finally:
+        app.dependency_overrides.pop(get_product_repository, None)
+
+
 def test_missing_products_return_404() -> None:
     app.dependency_overrides[get_product_repository] = lambda: FakeProductRepository()
 

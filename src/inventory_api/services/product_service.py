@@ -28,7 +28,21 @@ class InMemoryProductRepository(IProductRepository):
         self.products[self.next_id] = product
         self.next_id += 1
         return product
+    
+    def patch(self, product_id: int, product_data: dict) -> Product|None:
+        product = self.products.get(product_id)
+        if product is None:
+            return None
+        
+        if "name" in product_data:
+            product.name = product_data["name"]
+        if "price" in product_data:
+            product.price = Decimal(product_data["price"])
+        if "quantity" in product_data:
+            product.quantity = product_data["quantity"]
 
+        return product
+    
     def update(self, product_id: int, product_data: dict) -> Product|None:
         product= self.products.get(product_id)
         if product is None:
@@ -63,6 +77,9 @@ class ProductService:
 
     def update_product(self, product_id: int, product_data: dict) -> Product | None:
         return self.repository.update(product_id, product_data)
+    
+    def patch_product(self, product_id: int, product_data: dict) -> Product | None:
+        return self.repository.patch(product_id, product_data)
 
     def delete_product(self, product_id: int) -> bool:
         return self.repository.delete(product_id)
