@@ -2,6 +2,10 @@
 
 A small FastAPI application for managing inventory products. It demonstrates request validation with Pydantic, a service layer, and a repository interface backed by an in-memory implementation.
 
+## Architecture
+
+
+
 ## Features
 
 - Create, list, retrieve, update, and delete products
@@ -61,10 +65,9 @@ Names must be 3 to 100 characters, prices must be greater than zero, and quantit
 
 ## Run tests
 
-In PowerShell, set the source path and run:
+Run the tests from the project root:
 
 ```powershell
-$env:PYTHONPATH = "src"
 python -m pytest test/test.py
 ```
 
