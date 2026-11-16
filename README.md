@@ -4,7 +4,7 @@ A small FastAPI application for managing inventory products. It demonstrates req
 
 ## Architecture
 
-
+<img width="4032" height="2454" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/e2a25bc6-ac29-4c88-8d86-d5d1681fa149" />
 
 ## Features
 
