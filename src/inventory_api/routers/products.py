@@ -2,8 +2,8 @@
 from fastapi import APIRouter, HTTPException, status
 
 from inventory_api.schemas.product import (ProductCreate, ProductPatch, ProductUpdate, ProductResponse)
+from inventory_api.services.service_dependencies import ProductServiceDependency
 
-from inventory_api.services.product_service import ProductServiceDependency
 router = APIRouter(prefix="/products", tags=["Products"])
 def CreateProductResponse(product):
         return ProductResponse(
@@ -19,7 +19,7 @@ async def get_product(product_id: int,
     product = service.get_product(product_id)
     if product is None:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Product not found"
         )
 
@@ -44,7 +44,7 @@ async def update_product(product_id: int,
     product = service.update_product(product_id, product_update.model_dump())
     if product is None:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Product not found"
         )
     return CreateProductResponse(product=product)
@@ -58,7 +58,7 @@ async def patch_product(product_id: int,
     )
     if product is None:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Product not found"
         )
     return CreateProductResponse(product=product)
@@ -69,6 +69,6 @@ async def delete_product(product_id: int,
     success = service.delete_product(product_id)
     if not success:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Product not found"
         )

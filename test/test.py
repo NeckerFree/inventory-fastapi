@@ -1,26 +1,8 @@
-from decimal import Decimal
-
 from fastapi.testclient import TestClient
 
 from inventory_api.main import app
-from inventory_api.schemas.product import Product
-from inventory_api.services.product_service import (
-    InMemoryProductRepository,
-    get_product_repository,
-)
-
-
-class FakeProductRepository(InMemoryProductRepository):
-    def __init__(self) -> None:
-        super().__init__()
-        self.products[1] = Product(
-            id=1,
-            name="Fake Product",
-            price=Decimal("9.99"),
-            quantity=1,
-        )
-        self.next_id = 2
-
+from inventory_api.repositories.repository_dependencies import get_product_repository
+from fake_product_repository import FakeProductRepository
 
 def test_product_repository_provider_reuses_repository() -> None:
     assert get_product_repository() is get_product_repository()
