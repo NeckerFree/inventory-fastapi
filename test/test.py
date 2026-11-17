@@ -66,10 +66,17 @@ def test_missing_products_return_404() -> None:
                 "/products/999",
                 json={"name": "Missing Product", "price": "9.99", "quantity": 1},
             )
+            patch_response = client.patch("/products/999", json={"name": "Missing Product"})
             delete_response = client.delete("/products/999")
 
         assert get_response.status_code == 404
         assert update_response.status_code == 404
+        assert patch_response.status_code == 404
         assert delete_response.status_code == 404
+        assert patch_response.json() == {
+            "status": 404,
+            "title": "Product not found",
+            "details": "Product with ID 999 does not exist",
+        }
     finally:
         app.dependency_overrides.pop(get_product_repository, None)
