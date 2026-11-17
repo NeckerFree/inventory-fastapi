@@ -10,22 +10,23 @@ A small FastAPI application for managing inventory products. It demonstrates req
 
 - Create, list, retrieve, update, and delete products
 - Validate product names, prices, quantities, and IDs
-- Return `404 Not Found` when a requested product does not exist
+- Return a consistent `404 Not Found` response when a product does not exist
 - Replace the repository dependency during tests
+- Add `X-Request-ID` and `X-Process-Time` headers to responses
 - Interactive API documentation at `/docs`
 
 ## Requirements
 
 - Python
 - FastAPI and Uvicorn
-- Pytest and `httpx2` to run the API tests
+- Pytest and HTTPX to run the API tests
 
 Install the packages in a virtual environment:
 
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install fastapi uvicorn pytest httpx2
+python -m pip install fastapi uvicorn pytest httpx
 ```
 
 ## Run the application
@@ -64,6 +65,8 @@ Product creation expects a JSON body such as:
 
 Names must be 3 to 100 characters, prices must be greater than zero, and quantities must be non-negative. Product IDs start at 1. A missing product returns `404`.
 
+The missing-product response includes `type`, `title`, `status`, `detail`, and `instance` fields. The `X-Request-ID` response header echoes a supplied request ID or contains a generated ID.
+
 ## Run tests
 
 Run the tests from the project root:
@@ -72,19 +75,31 @@ Run the tests from the project root:
 python -m pytest test/test.py
 ```
 
-The tests cover repository dependency overrides and missing-product responses.
+The tests cover repository dependency overrides, product updates, validation, and missing-product responses.
 
 ## Project layout
 
 ```text
 src/inventory_api/
-  dependencies.py            Repository protocol
-  main.py                    FastAPI application
-  routers/products.py        Product endpoints
-  schemas/product.py         Product model and request/response schemas
-  services/product_service.py Service and in-memory repository
+  main.py                              FastAPI app, middleware, and error handler
+  repositories/
+    generic_repository.py              Generic repository protocol
+    inmemory_product_repository.py     In-memory product repository
+    product_repository.py              Product repository protocol
+    repository_dependencies.py         Repository dependency provider
+  routers/
+    products.py                        Product endpoints
+  schemas/
+    product.py                         Product model and request/response schemas
+  services/
+    errors/
+      product_not_found.py             Missing-product exception
+    fake_database_session.py           Fake database session
+    product_service.py                 Product service
+    service_dependencies.py            Service dependency provider
 test/
-  test.py                    API tests
+  fake_product_repository.py           Test repository
+  test.py                               API tests
 ```
 
 The in-memory repository retains data only while the application process is running. Restarting the server clears all products.
